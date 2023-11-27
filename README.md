@@ -11,6 +11,7 @@ This is a simple ToDo List application built with Go for the backend and React f
 ## Technologies Used
 
 - **Backend (Go):**
+
   - [Fiber](https://github.com/gofiber/fiber/v2) - Web framework
   - [GORM](https://github.com/go-gorm/gorm) - ORM for database interactions
 
