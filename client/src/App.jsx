@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Stack from "@mui/material/Stack";
-import Button from "@mui/material/Button";
+
+import ResponsiveAppBar from "./assets/components/ResponsiveAppBar";
+import Container from "@mui/material/Container";
+import ContentTodo from "./assets/components/ContentTodo";
 
 function App() {
   const [data, setData] = useState([]);
@@ -17,24 +19,13 @@ function App() {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, []);
+  }, [setData]);
 
   return (
-    <>
-      <Stack spacing={2} direction="row">
-        <Button variant="text">Text</Button>
-        <Button variant="contained">Contained</Button>
-        <Button variant="outlined">Outlined</Button>
-      </Stack>
-      <div>
-        <h1>My Todo List</h1>
-        <ul>
-          {data.map((todo) => (
-            <li key={todo.id}>{todo.title}</li>
-          ))}
-        </ul>
-      </div>
-    </>
+    <Container maxWidth="xl">
+      <ResponsiveAppBar />
+      <ContentTodo data={data} setData={setData} />
+    </Container>
   );
 }
 
