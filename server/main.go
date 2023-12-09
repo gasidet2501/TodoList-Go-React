@@ -7,6 +7,7 @@ import (
 	"todo/database"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
 type todo struct{
@@ -25,14 +26,14 @@ type Todo struct {
 
 func main() {
 	app := fiber.New()
-
+	app.Use(cors.New())
 	// Middleware สำหรับ CORS
-	app.Use(func(c *fiber.Ctx) error {
-		c.Set("Access-Control-Allow-Origin", "http://localhost:5173") // Domain React Frontend
-		c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
-		c.Set("Access-Control-Allow-Headers", "Content-Type")
-		return c.Next()
-	})
+	// app.Use(func(c *fiber.Ctx) error {
+	// 	c.Set("Access-Control-Allow-Origin", "http://localhost:5173") // Domain React Frontend
+	// 	c.Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE")
+	// 	c.Set("Access-Control-Allow-Headers", "Content-Type")
+	// 	return c.Next()
+	// })
 
 	if database.DBerr != nil{
 		panic(database.DBerr.Error())
@@ -97,6 +98,21 @@ func main() {
 		db.Save(&todolist)
 		jsonList, err := json.Marshal(todolist)
         if err != nil {
+            panic(err)
+        }
+		return c.Status(200).SendString(string(jsonList))
+	})
+
+	// Update done
+	app.Patch("/api/:id/done", func(c *fiber.Ctx) error {
+
+		var todolist todo
+		id := c.Params("id")
+		db.First(&todolist,id)
+		db.Model(&todolist).Update("done", !todolist.Done)
+		db.Save(&todolist)
+		jsonList, err := json.Marshal(todolist)
+		if err != nil {
             panic(err)
         }
 		return c.Status(200).SendString(string(jsonList))
